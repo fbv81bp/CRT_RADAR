@@ -27,8 +27,8 @@
 
 % DESCRIPTION
 
-% This code computes the distance of an object similarly to the Chinese Remainder
-% Theorem yet with spatial Fourier Transfroms from the phases of possibly reflected
+% This code computes the distance of an object, similarly to the Chinese Remainder
+% Theorem yet with spatial Fourier Transfroms, from the phases of possibly reflected
 % radio signals. It works with real numbers, not just with relative prime naturals.
 
 
@@ -36,12 +36,12 @@
 
 % Calculating the best distance guess can be thought of as in interference problem:
 % if the received signals were sent out with the respective phase delays that were
-% measure, then the interference would be the strongest at the original reflection
-% point. This can be simulated by Fourier transforming such signals, that only have
-% a non-zero values where offset plus the wavelength plus-minus the measurements'
-% imprecisions determine it. Then adding up such Fourier transforms and calculating
+% measured, then the interference would be the strongest at the original reflection
+% point. This can be simulated by Fourier transforming such signals, which only have
+% non-zero values where the offset plus the wavelengths plus-minus the measurements'
+% imprecisions determine it. Then summing up such Fourier transforms and calculating
 % the inverse Fourier transform, yields the highest peak at the original point where
-% phases were aligned: in this very siimple proof of concept I calculated with the
+% the phases were aligned: in this very simple proof of concept I calculated with the
 % traced object being the source of radio signals, and all signals were sent out with
 % phase 0. Summing up the Fourier series is a solution, because of superposition.
 
@@ -49,14 +49,17 @@
 % POSSIBLE IMPROVEMENTS
 
 % - the non-zero values in the saptial functions (variable 'a') could be replaced by
-%   the measurements actual error distribution, which may give more exact results
+%   the measurements' actual error distribution, which may give more exact results
 % - there are most of time multiple spikes at the same highest maximum, yet the widest
 %   one seems to be the correct guess
-% - the space domain functions don't all have to be calculated for the Fourier transform,
+% - the space domain functions don't all have to be calculated for the Fourier transform:
 %   the laws of Fourier calculation should be enough to calculate the measurement error
-%   distributions' transform, and then caculate if it was delayed by the offset plus the
-%   wavelength
+%   distributions' transform, and then calculate if it was shifted in space at 1st by the
+%   offset, then with the wavelengths
 % - imprecision likely varies from wavelength to wavelength
+
+
+% Example usage: >> crt4real_compact(1527.4, [13.1, 14.5, 17.6, 22.8], 1.2)
 
 function _ = crt4real_compact(distance, wavelengths, imprecision)
   phases = real_mod(distance, wavelengths) % simulating phase measurements
@@ -64,7 +67,7 @@ function _ = crt4real_compact(distance, wavelengths, imprecision)
   for i = 1:size(wavelengths)(2)
     max_pos = max_pos * wavelengths(i) % maximum distance according to Chinese Remainder Theorem
   endfor
-  position_line = [1:0.1:max_pos];
+  position_line = [1:0.1:max_pos]; % the middle term specifies the real digits' precision, here a tenth
   lines = ones(size(wavelengths)(2),1);
   position = lines * position_line; % this helps to set up the spatial functions
   a = (real_mod(position.-phases, wavelengths) <= imprecision); % spatial functions are either 0 or 1:
@@ -81,14 +84,12 @@ function _ = crt4real_compact(distance, wavelengths, imprecision)
   plot(abs(crt'))
 endfunction
 
-
-
-
 function ret_val  = real_mod(dividend, divisor)
   quote = dividend ./ divisor'; % number of wavelengths in the distance
   natural = floor(quote); % number of whole wavelengths
   ret_val = dividend .- natural .* divisor'; % phases are that remain after subtracting whole wavelengths
 endfunction
+
 
 % A simplified, easier to follow code is presented below:
 
