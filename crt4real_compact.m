@@ -20,10 +20,6 @@
 % OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 % SOFTWARE.
 
-% This is a MATLAB code showing how to calculate a Chinese Remainder Theory
-% based RADAR distance value safely with Fourier Transforms instead.
-
-
 
 % DESCRIPTION
 
@@ -59,7 +55,9 @@
 % - imprecision likely varies from wavelength to wavelength
 
 
-% Example usage: >> crt4real_compact(1527.4, [13.1, 14.5, 17.6, 22.8], 1.2)
+% EXAMPLE
+
+% >> crt4real_compact(1527.4, [13.1, 14.5, 17.6, 22.8], 1.2)
 
 function _ = crt4real_compact(distance, wavelengths, imprecision)
   phases = real_mod(distance, wavelengths) % simulating phase measurements
